@@ -73,42 +73,45 @@ export const login = async (req, res, next) => {
 
     if (user && (await comparePassword(password, user.password))) {
       try {
-
-        const auth = await axios.post(`${process.env.API_URL}/auth/local`, {
-          data: {
-            identifier: user.email, 
+        console.log(user.email, password);
+        const auth = await axios.post(
+          `${process.env.API_URL}/api/auth/local`,
+          {
+            identifier: user.email,
             password: password,
           },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        const { role } = await strapi.request("get", "/users/me", {
+          params: {
+            populate: ["role"],
+          },
+          headers: {
+            Authorization: `Bearer ${auth.data.jwt}`,
+          },
         });
-        // const {role} = await strapi.request("get","/users/me", {
-        //   params: {
-        //     populate: ['role']
-        //   },  
-        //   headers: {
-        //     Authorization: `Bearer ${auth.jwt}`,
-        //   }
-        // })
 
-        
         res.json({
           _id: user.id,
           name: user.name,
           email: user.email,
-          token: auth.jwt,
-          // role: role.type,
-          refreshToken: auth.refreshToken,
+          token: auth.data.jwt,
+          role: role.type,
+          refreshToken: auth.data.refreshToken,
         });
       } catch (err) {
-        console.log(err)
         throw new Error(err);
       }
     } else {
       res.status(400);
-      
+
       throw new Error("Email or password is incorrect.");
     }
   } catch (err) {
-    console.log('sdfs')
     next(err);
   }
 };
