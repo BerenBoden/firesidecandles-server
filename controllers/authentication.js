@@ -73,10 +73,10 @@ export const login = async (req, res, next) => {
 
     if (user && (await comparePassword(password, user.password))) {
       try {
-
+      console.log(process.env.API_URL)
         const auth = await strapi.request("post", "/auth/local", {
           data: {
-            identifier: user.email,
+            identifier: user.email, 
             password: password,
           },
         });
