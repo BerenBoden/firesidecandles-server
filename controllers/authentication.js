@@ -80,14 +80,14 @@ export const login = async (req, res, next) => {
             password: password,
           },
         });
-        const {role} = await strapi.request("get","/users/me", {
-          params: {
-            populate: ['role']
-          },  
-          headers: {
-            Authorization: `Bearer ${auth.jwt}`,
-          }
-        })
+        // const {role} = await strapi.request("get","/users/me", {
+        //   params: {
+        //     populate: ['role']
+        //   },  
+        //   headers: {
+        //     Authorization: `Bearer ${auth.jwt}`,
+        //   }
+        // })
 
         
         res.json({
@@ -95,7 +95,7 @@ export const login = async (req, res, next) => {
           name: user.name,
           email: user.email,
           token: auth.jwt,
-          role: role.type,
+          // role: role.type,
           refreshToken: auth.refreshToken,
         });
       } catch (err) {
