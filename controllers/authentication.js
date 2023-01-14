@@ -5,7 +5,7 @@ import axios from "axios";
 import Strapi from "strapi-sdk-js";
 
 const strapi = new Strapi({
-  url: "http://localhost:1337",
+  url: process.env.API_URL,
   prefix: "/api",
   store: {
     key: "strapi_jwt",
@@ -25,13 +25,13 @@ export const register = async (req, res, next) => {
       return;
     }
 
-    const { email, name } = req.body;
+    const { email, username } = req.body;
     try {
       const auth = await axios.post(
         `${process.env.API_URL}/api/auth/local/register`,
         {
-          username: name,
-          email: email,
+          username,
+          email,
           password: req.body.password,
         }
       );
@@ -42,7 +42,7 @@ export const register = async (req, res, next) => {
 
     const user = new User({
       email,
-      name,
+      username,
     });
 
     const hashedPassword = await hashPassword(req.body.password);
@@ -80,14 +80,14 @@ export const login = async (req, res, next) => {
             password: password,
           },
         });
-        // const {role} = await strapi.request("get","/users/me", {
-        //   params: {
-        //     populate: ['role']
-        //   },  
-        //   headers: {
-        //     Authorization: `Bearer ${auth.jwt}`,
-        //   }
-        // })
+        const {role} = await strapi.request("get","/users/me", {
+          params: {
+            populate: ['role']
+          },  
+          headers: {
+            Authorization: `Bearer ${auth.jwt}`,
+          }
+        })
 
         
         res.json({
@@ -95,7 +95,7 @@ export const login = async (req, res, next) => {
           name: user.name,
           email: user.email,
           token: auth.jwt,
-          // role: role.type,
+          role: role.type,
           refreshToken: auth.refreshToken,
         });
       } catch (err) {
