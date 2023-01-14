@@ -1,5 +1,3 @@
-import User from "../models/User.js";
-import { hashPassword, comparePassword } from "../utils/password.js";
 import { validationResult } from "express-validator";
 import axios from "axios";
 import Strapi from "strapi-sdk-js";
@@ -27,32 +25,17 @@ export const register = async (req, res, next) => {
 
     const { email, username } = req.body;
     try {
-      const auth = await axios.post(
-        `${process.env.API_URL}/api/auth/local/register`,
-        {
-          username,
-          email,
-          password: req.body.password,
-        }
-      );
-      console.log(auth.data);
+      await axios.post(`${process.env.API_URL}/api/auth/local/register`, {
+        username,
+        email,
+        password: req.body.password,
+      });
     } catch (err) {
-      console.log(err.message);
+      throw new Error(err);
     }
-
-    const user = new User({
-      email,
-      username,
-    });
-
-    const hashedPassword = await hashPassword(req.body.password);
-    user.password = hashedPassword;
-
-    await user.save();
     res.json({ message: "Registered successfully!" });
     next();
   } catch (err) {
-    err.message = "Unable to register user.";
     next(err);
   }
 };
@@ -69,46 +52,37 @@ export const login = async (req, res, next) => {
       return;
     }
 
-    const user = await User.findOne({ email });
-
-    if (user && (await comparePassword(password, user.password))) {
-      try {
-        console.log(user.email, password);
-        const auth = await axios.post(
-          `${process.env.API_URL}/api/auth/local`,
-          {
-            identifier: user.email,
-            password: password,
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        const { role } = await strapi.request("get", "/users/me", {
-          params: {
-            populate: ["role"],
-          },
+    try {
+      const { data } = await axios.post(
+        `${process.env.API_URL}/api/auth/local`,
+        {
+          identifier: email,
+          password,
+        },
+        {
           headers: {
-            Authorization: `Bearer ${auth.data.jwt}`,
+            "Content-Type": "application/json",
           },
-        });
+        }
+      );
+      const { role } = await strapi.request("get", "/users/me", {
+        params: {
+          populate: ["role"],
+        },
+        headers: {
+          Authorization: `Bearer ${data.jwt}`,
+        },
+      });
 
-        res.json({
-          _id: user.id,
-          name: user.name,
-          email: user.email,
-          token: auth.data.jwt,
-          role: role.type,
-          refreshToken: auth.data.refreshToken,
-        });
-      } catch (err) {
-        throw new Error(err);
-      }
-    } else {
-      res.status(400);
-
+      res.json({
+        id: data.user.id,
+        username: data.user.username,
+        email: data.user.email,
+        token: data.jwt,
+        role: role.type,
+        refreshToken: data.refreshToken,
+      });
+    } catch (err) {
       throw new Error("Email or password is incorrect.");
     }
   } catch (err) {
