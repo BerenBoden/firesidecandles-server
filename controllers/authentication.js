@@ -1,17 +1,6 @@
 import { validationResult } from "express-validator";
 import axios from "axios";
-import Strapi from "strapi-sdk-js";
-
-const strapi = new Strapi({
-  url: process.env.API_URL,
-  prefix: "/api",
-  store: {
-    key: "strapi_jwt",
-    useLocalStorage: false,
-    cookieOptions: { path: "/" },
-  },
-  axiosOptions: {},
-});
+import {createStrapi} from "../config/strapi.js";
 
 export const register = async (req, res, next) => {
   try {
@@ -41,6 +30,7 @@ export const register = async (req, res, next) => {
 };
 
 export const login = async (req, res, next) => {
+  const strapi = createStrapi();
   try {
     const { email, password } = req.body;
 
