@@ -39,7 +39,6 @@ export const postBlog = async (req, res, next) => {
     });
     res.send(data);
   } catch (err) {
-    console.log(err);
     next(err);
   }
 };
