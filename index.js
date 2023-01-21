@@ -2,7 +2,10 @@ import express from 'express';
 import dotenv from 'dotenv'
 import connectDB from './config/db.js';
 import authentication from './routes/authentication.js'
-import categories from './routes/categories.js'
+import identifiers from './routes/content-identifiers.js'
+import blogs from './routes/blogs.js'
+import users from './routes/users.js'
+import refreshToken from './routes/refreshToken.js'
 import errorHandler from './middleware/errorHandler.js';
 import cors from 'cors';
 
@@ -16,7 +19,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/authentication', authentication);
-app.use('/api/categories', categories);
+app.use('/api/identifiers', identifiers);
+app.use('/api/posts', blogs);
+app.use('/api/users', users)
+app.use('/api/refresh', refreshToken)
 
 app.use(errorHandler)
 
