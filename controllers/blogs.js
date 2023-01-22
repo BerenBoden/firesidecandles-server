@@ -4,7 +4,15 @@ import axios from "axios";
 import FormData from "form-data";
 
 export const getBlogs = async (req, res, next) => {
-
+  const strapi = await createStrapi();
+  try {
+    const data = await strapi.find("blogs", { 
+      populate: ["image_header", "blog_categories", "blog_tags", "author"],
+    });
+    res.send(data);
+  }catch(err){
+    next(err)
+  }
 };
 
 export const postBlog = async (req, res, next) => {

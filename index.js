@@ -20,7 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/authentication', authentication);
 app.use('/api/identifiers', identifiers);
-app.use('/api/posts', blogs);
+app.use('/api/blogs', blogs);
 app.use('/api/users', users)
 app.use('/api/refresh', refreshToken)
 
