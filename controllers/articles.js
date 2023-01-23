@@ -29,7 +29,7 @@ export const postArticle = async (req, res, next) => {
 
   try {
     const { data } = await axios.post(
-      `${process.env.TESTAPI_URL}/api/articles`,
+      `${process.env.API_URL}/api/articles`,
       formData,
       {
         headers: {
