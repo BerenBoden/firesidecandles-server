@@ -8,7 +8,7 @@ router.route("/").post(async (req, res, next) => {
   const { userId } = req.body;
   const { refreshToken } = await RefreshUser.findOne({userId})
   try {
-    const data = await axios.post(`${process.env.API_URL}/api/token/refresh`, {
+    const data = await axios.post(`${process.env.TESTAPI_URL}/api/token/refresh`, {
         refreshToken: refreshToken,
     })
 

@@ -1,4 +1,5 @@
 import { createStrapi } from "../config/strapi.js";
+import pluralize from "pluralize";
 
 export const getIdentifiers = async (req, res, next) => {
   const strapi = await createStrapi();
@@ -18,10 +19,12 @@ export const getIdentifiers = async (req, res, next) => {
 
 export const deleteIdentifier = async (req, res, next) => {
   const id = req.url.split('/')[1]
+  const {content, identifier} = req.query;
+
   const strapi = await createStrapi();
   strapi.axios.defaults.headers.common["Authorization"] = `${req.headers.authorization}`;
   try {
-    const data = await strapi.delete("blog-categories", id);
+    const data = await strapi.delete(`${content}-${identifier}`, id);
     res.send(data);
   } catch (err) {
     next(err);
@@ -31,9 +34,13 @@ export const deleteIdentifier = async (req, res, next) => {
 export const postIdentifier = async (req, res, next) => {
   const strapi = await createStrapi();
   strapi.axios.defaults.headers.common["Authorization"] = `${req.headers.authorization}`;
-  const {name} = req.body;
+  const {content, identifier} = req.query;
+  const {name, related} = req.body;
+
+  const relatedContent = `${pluralize.singular(identifier)}_${pluralize(content)}`
+
   try {
-    const data = await strapi.create("blog-categories", {name});
+    const data = await strapi.create(`${content}-${identifier}`, {name, [relatedContent]: related});
     res.send(data);
   }catch(err){
     next(err)

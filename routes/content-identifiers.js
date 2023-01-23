@@ -3,7 +3,7 @@ import { deleteIdentifier, getIdentifiers, postIdentifier } from '../controllers
 
 const router = express.Router();
 
-router.route('/').get(getIdentifiers)
-router.route('/:id').delete(deleteIdentifier).post(postIdentifier)
+router.route('/').get(getIdentifiers).post(postIdentifier)
+router.route('/:id').delete(deleteIdentifier)
 
 export default router;

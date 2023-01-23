@@ -15,7 +15,7 @@ export const register = async (req, res, next) => {
 
     const { email, username } = req.body;
     try {
-      await axios.post(`${process.env.API_URL}/api/auth/local/register`, {
+      await axios.post(`${process.env.TESTAPI_URL}/api/auth/local/register`, {
         username,
         email,
         password: req.body.password,
