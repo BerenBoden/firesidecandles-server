@@ -2,6 +2,7 @@ import { validationResult } from "express-validator";
 import axios from "axios";
 import { createStrapi } from "../config/strapi.js";
 import RefreshUser from "../models/RefreshUser.js";
+import {API_URL} from "../index.js";
 
 export const register = async (req, res, next) => {
   try {
@@ -15,7 +16,7 @@ export const register = async (req, res, next) => {
 
     const { email, username } = req.body;
     try {
-      await axios.post(`${process.env.API_URL}/api/auth/local/register`, {
+      await axios.post(`${API_URL}/api/auth/local/register`, {
         username,
         email,
         password: req.body.password,
