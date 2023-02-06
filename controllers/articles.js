@@ -6,8 +6,13 @@ import { API_URL } from "../index.js";
 
 export const getArticles = async (req, res, next) => {
   const strapi = await createStrapi();
+    const { start, limit } = req.query;
   try {
     const data = await strapi.find("articles", {
+      pagination: {
+        start,
+        limit,
+      },
       populate: [
         "image_header",
         "article_categories",
@@ -39,19 +44,17 @@ export const getArticleById = async (req, res, next) => {
 };
 
 export const postArticle = async (req, res, next) => {
-  const strapi = await createStrapi();
   const image_header = req.file;
   const fileStream = fs.createReadStream(image_header.path);
-
+  console.log(req.body.data)
   const formData = new FormData();
 
-  formData.append("data", req.body.data);
-  formData.append("files.image_header", fileStream, {
-    filename: image_header.originalname,
-    contentType: image_header.mimetype,
-  });
-
   try {
+    formData.append("data", req.body.data);
+    formData.append("files.image_header", fileStream, {
+      filename: image_header.originalname,
+      contentType: image_header.mimetype,
+    });
     const { data } = await axios.post(`${API_URL}/api/articles`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
@@ -75,7 +78,7 @@ export const updateArticle = async (req, res, next) => {
   let fileStream;
   const image_header = req.file;
   const formData = new FormData();
-
+  console.log(req.body.data)
   formData.append("data", req.body.data);
 
   if (image_header) {

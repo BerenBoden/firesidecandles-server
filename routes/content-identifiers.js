@@ -1,9 +1,9 @@
 import express from 'express';
-import { deleteIdentifier, getIdentifiers, postIdentifier } from '../controllers/content-identifiers.js';
+import { deleteIdentifier, getIdentifierById, getIdentifiers, postIdentifier, updateIdentifier} from '../controllers/content-identifiers.js';
 
 const router = express.Router();
 
 router.route('/').get(getIdentifiers).post(postIdentifier)
-router.route('/:id').delete(deleteIdentifier)
+router.route('/:id').get(getIdentifierById).delete(deleteIdentifier).put(updateIdentifier)
 
 export default router;
