@@ -5,6 +5,7 @@ import authentication from './routes/authentication.js'
 import identifiers from './routes/content-identifiers.js'
 import articles from './routes/articles.js'
 import products from './routes/products.js';
+import pageContent from './routes/page-content.js'
 import users from './routes/users.js'
 import refreshToken from './routes/refreshToken.js'
 import errorHandler from './middleware/errorHandler.js';
@@ -23,6 +24,7 @@ app.use('/api/authentication', authentication);
 app.use('/api/identifiers', identifiers);
 app.use('/api/articles', articles);
 app.use('/api/products', products);
+app.use('/api/page-content', pageContent)
 app.use('/api/users', users)
 app.use('/api/refresh', refreshToken)
 
