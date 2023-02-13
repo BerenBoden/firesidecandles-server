@@ -4,6 +4,7 @@ import pluralize from "pluralize";
 export const getIdentifiers = async (req, res, next) => {
   const strapi = await createStrapi();
   const {start, limit, content, identifier} = req.query;
+  console.log(req.query)
   try {
     const data = await strapi.find(`${content}-${identifier}`, {
       pagination: {
@@ -15,7 +16,7 @@ export const getIdentifiers = async (req, res, next) => {
   } catch (err) {
     next(err);
   }
-}; 
+};
 
 export const getIdentifierById = async (req, res, next) => {
   const strapi = await createStrapi();
