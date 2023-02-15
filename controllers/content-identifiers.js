@@ -3,14 +3,15 @@ import pluralize from "pluralize";
 
 export const getIdentifiers = async (req, res, next) => {
   const strapi = await createStrapi();
-  const {start, limit, content, identifier} = req.query;
-  console.log(req.query)
+  const {start, limit, content, identifier, related} = req.query;
+
   try {
     const data = await strapi.find(`${content}-${identifier}`, {
       pagination: {
         start,
         limit,
       },
+      populate: [`${related ? `category_${pluralize(content)}.image_header` : ``}`],
     });
     res.send(data);
   } catch (err) {
